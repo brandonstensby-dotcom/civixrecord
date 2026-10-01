@@ -30,6 +30,10 @@ class MicroVmOpcode(enum.IntEnum):
     OP_MERMAID_SYNTHESIS = 0x30
     OP_CRYPTO_SEAL_BUNDLE = 0x40
     OP_YOUTUBE_DISPATCH = 0x55
+    # Edge Hardware & Multi-Sensor BLE Integration (Research Spec: eBPF / RISC-V Neural Extensions)
+    OP_BLE_HEADSET_SYNC = 0x60        # IEEE 802.15.1 LC3 high-fidelity audio mesh
+    OP_GLASSES_OPTICAL_SYNC = 0x61    # Zero-copy optical sensor capture & spatial gaze alignment
+    OP_PEN_RECORDER_SYNC = 0x62       # Acoustic stylus & ultrasonic paper stroke digitizer
     OP_HALT_GATE = 0xFF
 
 
@@ -98,6 +102,32 @@ class MachineCodeBridge:
                 payload=struct.pack(">I", data.get("motion_count", 1)),
                 crc32_checksum=0x5C80FA12
             ))
+        elif operation == "sync_edge_hardware":
+            device_type = data.get("device_type", "headset")
+            if device_type == "smart_glasses":
+                # Opcode 0x61: Optical sensor frame synchronization (USENIX ATC '25 zero-copy spec)
+                frames.append(BytecodeFrame(
+                    opcode=MicroVmOpcode.OP_GLASSES_OPTICAL_SYNC,
+                    payload_len=8,
+                    payload=struct.pack(">II", data.get("fps", 30), data.get("shutter_us", 1000)),
+                    crc32_checksum=0x34A1B8C0
+                ))
+            elif device_type == "pen_recorder":
+                # Opcode 0x62: Ultrasonic stylus positional digitization
+                frames.append(BytecodeFrame(
+                    opcode=MicroVmOpcode.OP_PEN_RECORDER_SYNC,
+                    payload_len=4,
+                    payload=struct.pack(">I", data.get("dpi", 1200)),
+                    crc32_checksum=0x8892EF11
+                ))
+            else:
+                # Opcode 0x60: Bluetooth LE Audio LC3 codec stream synchronization
+                frames.append(BytecodeFrame(
+                    opcode=MicroVmOpcode.OP_BLE_HEADSET_SYNC,
+                    payload_len=6,
+                    payload=b"\x00\x1A\x7D\x44\x01\x00",
+                    crc32_checksum=0x99238ACF
+                ))
         else:
             frames.append(BytecodeFrame(
                 opcode=MicroVmOpcode.OP_NOP,

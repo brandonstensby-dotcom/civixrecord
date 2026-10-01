@@ -45,6 +45,25 @@ class TestMachineCodeBridge(unittest.TestCase):
         self.assertEqual(frames[0].opcode, MicroVmOpcode.OP_STATUTORY_INDEX)
         self.assertEqual(frames[0].payload_len, 16)
 
+    def test_compile_edge_hardware_ir(self) -> None:
+        # Test Bluetooth headset LC3 compilation
+        headset_frames = self.bridge.compile_ir("sync_edge_hardware", {"device_type": "headset"})
+        self.assertEqual(len(headset_frames), 1)
+        self.assertEqual(headset_frames[0].opcode, MicroVmOpcode.OP_BLE_HEADSET_SYNC)
+        self.assertEqual(headset_frames[0].payload_len, 6)
+
+        # Test Smart Glasses optical sync compilation
+        glasses_frames = self.bridge.compile_ir("sync_edge_hardware", {"device_type": "smart_glasses", "fps": 60})
+        self.assertEqual(len(glasses_frames), 1)
+        self.assertEqual(glasses_frames[0].opcode, MicroVmOpcode.OP_GLASSES_OPTICAL_SYNC)
+        self.assertEqual(glasses_frames[0].payload_len, 8)
+
+        # Test Acoustic Pen recorder compilation
+        pen_frames = self.bridge.compile_ir("sync_edge_hardware", {"device_type": "pen_recorder", "dpi": 2400})
+        self.assertEqual(len(pen_frames), 1)
+        self.assertEqual(pen_frames[0].opcode, MicroVmOpcode.OP_PEN_RECORDER_SYNC)
+        self.assertEqual(pen_frames[0].payload_len, 4)
+
     def test_emulated_fallback_dispatch(self) -> None:
         frames = self.bridge.compile_ir("synthesize_decision_tree", {"motion_count": 5})
         result = self.bridge.dispatch(frames)

@@ -4,7 +4,6 @@ CLI Integration Test Suite for CivixRecord
 
 import json
 from click.testing import CliRunner
-import pytest
 
 from civixrecord.cli import cli
 

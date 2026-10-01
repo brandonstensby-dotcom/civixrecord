@@ -7,12 +7,11 @@ import json
 import os
 import sys
 import time
-from typing import Optional
 import click
 
-from civixrecord.analysis.motion_extractor import MotionExtractor
 from civixrecord.analysis.flowchart_generator import FlowchartGenerator
-from civixrecord.core_bridge.machine_code_bridge import MachineCodeBridge, MicroVmOpcode
+from civixrecord.analysis.motion_extractor import MotionExtractor
+from civixrecord.core_bridge.machine_code_bridge import MachineCodeBridge
 
 
 @click.group()

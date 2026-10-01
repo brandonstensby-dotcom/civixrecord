@@ -1,0 +1,24 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace = "org.civixrecord.mobile"
+    compileSdk = 34
+
+    defaultConfig {
+        applicationId = "org.civixrecord.mobile"
+        minSdk = 24
+        targetSdk = 34
+        versionCode = 1
+        versionName = "0.4.1"
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.debug
+        }
+    }
+}

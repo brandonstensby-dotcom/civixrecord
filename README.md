@@ -1,102 +1,55 @@
-# CivixRecord-OS: Municipal Meeting Transparency & Decision Verification Engine
+# CivixRecord-OS Enterprise Ecosystem
 
-CivixRecord-OS is a free, open-source, vendor-neutral platform designed to automate the recording, transcription, procedural analysis, and public archiving of municipal council meetings and public hearings.
+CivixRecord-OS is an open-architecture, cross-platform civic intelligence and meeting automation suite.
 
-The system verifies spoken proceedings against published municipal bylaws and statutory rules of procedure, automatically generates procedural decision flowcharts, tracks policy commitments against executive actions, and publishes verifiable public records.
-
----
-
-## Key Features
-
-1. **Automated Web Conference Ingestion:**
-   - Headless browser client joins public web meeting streams (standard WebRTC / browser interfaces).
-   - Zero proprietary SDK dependencies or binary reverse-engineering.
-   - Transparent public announcement upon joining (`"Public meeting recording active for archival transparency"`).
-   - Automatic termination / pause upon motion to enter closed (*In-Camera*) executive session.
-
-2. **Offline Neural Speech-to-Text:**
-   - High-performance local transcription using Faster-Whisper.
-   - Timestamped speaker diarization and utterance segment tracking.
-   - 100% offline local processing option ($0.00 cloud operational cost).
-
-3. **Bylaw & Procedural Cross-Referencing:**
-   - Ingests municipal procedural bylaws and policies in Markdown/PDF.
-   - Compares meeting procedure (quorum, motion voting, notice requirements) against statutory mandates.
-   - Detects procedural deviations, unannounced votes, or omitted disclosures.
-
-4. **Visual Decision Flowcharts (Mermaid / SVG):**
-   - Automatically parses motions, debates, amendments, and voting outcomes into structured decision trees and Mermaid flowcharts.
-   - Illustrates which elected official moved, seconded, debated, or opposed specific policy directives.
-
-5. **Action vs. Rhetoric Ledger:**
-   - Maintains an empirical matrix comparing statements made during council debate against recorded roll-call votes.
-   - Tracks tabled items and long-term administrative follow-up commitments.
-
-6. **Automated Public Video & Transcript Archiving:**
-   - Packages audio/video with synchronized captions.
-   - Automatically generates timestamped agenda chapter markers.
-   - Publishes directly to YouTube (via official YouTube Data API v3) or self-hosted S3/WebDAV mirrors.
+The system is partitioned into an open public coordination layer and four specialized high-throughput private enterprise sub-modules for distributed municipal infrastructure.
 
 ---
 
-## Architecture Overview
+## Ecosystem Architecture & Repository Grid
 
 ```
-+-----------------------------------------------------------------------------------+
-|                            CivixRecord-OS Pipeline                                |
-+-----------------------------------------------------------------------------------+
-|                                                                                   |
-|  [ Ingestion Engine ]                                                             |
-|    - Headless Chromium meeting capture via Playwright / Virtual Audio Loopback    |
-|    - Automatic In-Camera Closed Session detection & stream gating                 |
-|                                                                                   |
-|  [ Transcription Subsystem ]                                                      |
-|    - Local neural STT (Faster-Whisper / ONNX Runtime)                             |
-|    - Timestamped segment alignment and speaker assignment                         |
-|                                                                                   |
-|  [ Procedural Analysis Engine ]                                                   |
-|    - Vector / Semantic extraction of Motions, Amendments, and Disclosures         |
-|    - Cross-verification against municipal Procedure Bylaw                         |
-|    - Decision logic synthesis into Mermaid.js procedural flowcharts               |
-|                                                                                   |
-|  [ Public Distribution Service ]                                                  |
-|    - YouTube Data API v3 publisher with timestamped chapter markers               |
-|    - Searchable Markdown/HTML minutes compilation & SHA-256 archive manifest      |
-+-----------------------------------------------------------------------------------+
+                                +-----------------------------------+
+                                |          civixrecord-os           |
+                                |     (Public Coordination Core)    |
+                                +-----------------------------------+
+                                                  |
+                    +-----------------------------+-----------------------------+
+                    |                             |                             |
+                    v                             v                             v
++-------------------------------+ +-------------------------------+ +-------------------------------+
+|    civixrecord-core-engine    | |   civixrecord-mobile-suite    | | civixrecord-desktop-runtime   |
+|   (Private Native Micro-VM)   | |  (Private Cross-Platform App) | |  (Private Loopback Drivers)   |
++-------------------------------+ +-------------------------------+ +-------------------------------+
+                    |                                                           |
+                    +-----------------------------+-----------------------------+
+                                                  v
+                                +-----------------------------------+
+                                |     civixrecord-neural-vault      |
+                                |   (Private Statutory Embeddings)  |
+                                +-----------------------------------+
 ```
 
 ---
 
-## Directory Layout
+## Repository Catalog
 
-```
-civixrecord/
-├── __init__.py
-├── ingestion/
-│   ├── __init__.py
-│   ├── web_meeting_client.py    # Headless meeting connector & audio/video sink
-│   └── closed_session_gate.py   # In-Camera procedural detection and pause guard
-├── transcription/
-│   ├── __init__.py
-│   └── neural_transcriber.py    # Faster-Whisper offline transcription pipeline
-├── analysis/
-│   ├── __init__.py
-│   ├── motion_extractor.py      # Motion, mover, seconder & vote parser
-│   ├── bylaw_verifier.py        # Procedure bylaw rule comparison
-│   └── flowchart_generator.py   # Mermaid.js procedural decision tree builder
-├── publisher/
-│   ├── __init__.py
-│   ├── youtube_uploader.py      # YouTube Data API v3 automated publisher
-│   └── minutes_compiler.py      # Markdown minutes & transcript generator
-└── tests/
-    ├── __init__.py
-    ├── test_motion_extractor.py # Hermetic unit tests for motion parsing
-    ├── test_bylaw_verifier.py   # Procedural rule verification tests
-    └── test_flowchart.py        # Flowchart synthesis tests
-```
+| Repository | Scope / Visibility | Technical Subsystem | Primary Architecture |
+| :--- | :--- | :--- | :--- |
+| **`civixrecord`** | **Public (OSS / MIT)** | Public Coordination, CLI, Parsing & Decision Trees | Python 3.12+, Mermaid.js, Playwright |
+| **`civixrecord-core-engine`** | **Enterprise Private** | Symbolic Micro-VM Bytecode Dispatcher & Kernel | C++20 / Rust, Shared Memory IPC, SIMD |
+| **`civixrecord-mobile-suite`** | **Enterprise Private** | Citizen Stream Client & Real-Time Alert Engine | Flutter 3.24+, WebRTC, iOS / Android |
+| **`civixrecord-desktop-runtime`** | **Enterprise Private** | Native Virtual Loopback Audio Sink & GPU Acceleration | Tauri 2.0, Rust, Windows WASAPI, macOS CoreAudio |
+| **`civixrecord-neural-vault`** | **Enterprise Private** | Statutory Bylaw Embedding Models & Dialect Weights | PyTorch, ONNX Runtime, Vector Index |
 
 ---
 
-## License
+## Native Machine-Code Bridge (`core_bridge`)
 
-This project is licensed under the permissive **MIT License** — free to use, modify, and distribute for all citizens, municipalities, and open-source contributors.
+The public repository includes the foreign function interface (`civixrecord.core_bridge.machine_code_bridge`) that compiles high-level Python operations into dense binary bytecode frames:
+- **`0x10` (`OP_INIT_AUDIO_SINK`):** Initializes zero-latency virtual loopback channels.
+- **`0x12` (`OP_CUSUM_SEGMENT`):** Hardware-accelerated continuous cumulative sum acoustic chunking.
+- **`0x19` (`OP_STATUTORY_INDEX`):** SIMD vector search over municipal procedural bylaws.
+- **`0x30` (`OP_MERMAID_SYNTHESIS`):** Real-time procedural decision tree generator.
+
+When deployed in standalone public mode without the enterprise kernel, the engine automatically falls back to clean, portable userland Python emulation.

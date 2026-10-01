@@ -1,0 +1,66 @@
+[build-system]
+requires = ["hatchling>=1.25.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "civixrecord"
+version = "0.4.1"
+description = "Open-architecture municipal web meeting auto-recorder, statutory decision tree engine, and procedural compliance suite."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "CivixRecord Core Contributors", email = "oss@civixrecord.org" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Legal Industry",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio :: Capture/Recording",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "click>=8.1.7",
+    "pydantic>=2.8.2",
+    "typing-extensions>=4.12.2",
+]
+
+[project.optional-dependencies]
+full = [
+    "playwright>=1.47.0",
+    "fastapi>=0.115.0",
+    "uvicorn>=0.30.6",
+]
+dev = [
+    "pytest>=8.3.2",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.6.5",
+    "mypy>=1.11.2",
+    "build>=1.2.2",
+]
+
+[project.scripts]
+civixrecord = "civixrecord.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["civixrecord"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["civixrecord/tests"]
+python_files = ["test_*.py"]
+pythonpath = ["."]
+addopts = "-v --strict-markers"

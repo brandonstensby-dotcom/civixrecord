@@ -3,7 +3,7 @@ Flowchart Generator Module
 CivixRecord-OS: Procedural Decision Tree and Flowchart Engine
 """
 
-from typing import List
+from typing import List, Optional
 from civixrecord.analysis.motion_extractor import CouncilMotion
 
 
@@ -11,10 +11,15 @@ class FlowchartGenerator:
     """Generates standard Mermaid.js flowcharts depicting meeting procedural decisions."""
 
     @staticmethod
-    def generate_mermaid(meeting_title: str, motions: List[CouncilMotion]) -> str:
+    def generate_mermaid(meeting_title: str = "Council Public Session", motions: Optional[List[CouncilMotion]] = None) -> str:
         """Synthesizes a structured Mermaid flowchart from recorded motions."""
-        if not meeting_title:
-            raise ValueError("meeting_title must be provided")
+        if isinstance(meeting_title, list) and motions is None:
+            # Handle overloaded call format generate_mermaid(motions)
+            motions = meeting_title
+            meeting_title = "Council Public Session"
+            
+        if motions is None:
+            motions = []
 
         lines = [
             "```mermaid",

@@ -1,12 +1,59 @@
-# CivixRecord-OS Enterprise Ecosystem
+# CivixRecord-OS
 
-CivixRecord-OS is an open-architecture, cross-platform civic intelligence and meeting automation suite.
+[![CI Status](https://github.com/brandonstensby-dotcom/civixrecord/actions/workflows/ci.yml/badge.svg)](https://github.com/brandonstensby-dotcom/civixrecord/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/downloads/)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![Architecture: Micro--VM](https://img.shields.io/badge/ISA-CIVIX--IR--v2.1-orange)](https://github.com/brandonstensby-dotcom/civixrecord)
 
-The system is partitioned into an open public coordination layer and five specialized high-throughput private enterprise modules for distributed municipal infrastructure and edge sensor capture.
+CivixRecord-OS is an open-architecture, cross-platform civic intelligence and meeting automation suite. It automates municipal meeting audio capture, procedural motion extraction, roll-call voting records, and compiles deterministic Mermaid.js decision trees.
+
+---
+
+## Key Features
+
+- **Autonomous Meeting Ingestion:** Connects headless capture bots to Zoom, Microsoft Teams, WebRTC, and municipal YouTube livestreams.
+- **Mandatory In-Camera Gate:** Physically disconnects/mutes ingestion when council enters closed executive sessions.
+- **Procedural Motion Parser:** Detects motions, movers, seconders, and roll-call votes in real-time.
+- **Deterministic Flowcharts:** Synthesizes structured Mermaid.js procedural diagrams from meeting transcripts.
+- **Hardware Bridge Interface:** Dispatches dense binary opcodes to high-throughput native micro-VMs or runs cleanly via pure-Python emulation.
+
+---
+
+## Quickstart
+
+### Installation
+
+```bash
+git clone https://github.com/brandonstensby-dotcom/civixrecord.git
+cd civixrecord
+pip install -e .
+```
+
+### Run System Diagnostics
+
+```bash
+civixrecord doctor
+```
+
+### Parse Meeting Motions & Synthesize Flowchart
+
+```bash
+civixrecord analyze --transcript sample_transcript.json --output meeting_decision_tree.mmd
+```
+
+### Inspect Micro-VM Bridge & Run Benchmarks
+
+```bash
+civixrecord bridge --probe
+civixrecord bridge --benchmark
+```
 
 ---
 
 ## Ecosystem Architecture & Repository Grid
+
+CivixRecord-OS is structured as a public open-source coordination core with specialized enterprise modules:
 
 ```
                                 +-----------------------------------+
@@ -33,11 +80,9 @@ The system is partitioned into an open public coordination layer and five specia
 +-------------------------------+                           +-------------------------------+
 ```
 
----
+### Repository Catalog
 
-## Repository Catalog
-
-| Repository | Scope / Visibility | Technical Subsystem | Primary Architecture |
+| Repository | Scope / Visibility | Subsystem | Architecture |
 | :--- | :--- | :--- | :--- |
 | **`civixrecord`** | **Public (OSS / MIT)** | Public Coordination, CLI, Parsing & Decision Trees | Python 3.12+, Mermaid.js, Playwright |
 | **`civixrecord-core-engine`** | **Enterprise Private** | Symbolic Micro-VM Bytecode Dispatcher & Kernel | C++20 / Rust, Shared Memory IPC, SIMD |
@@ -48,30 +93,15 @@ The system is partitioned into an open public coordination layer and five specia
 
 ---
 
-## Edge Hardware & Multi-Sensor Ingestion (Research Add-On Specification)
+## Edge Hardware & Multi-Sensor Ingestion (Research Spec)
 
-CivixRecord-OS specifies integration with personal civic capture peripherals via Bluetooth Low Energy (BLE) and optical edge devices, offloaded to the private hardware module:
-
-1. **Bluetooth Headset Arrays (`0x60` `OP_BLE_HEADSET_SYNC`):**
-   - High-fidelity dual-microphone noise suppression utilizing the Bluetooth LE Audio LC3 codec.
-   - Isochronous channel multiplexing for low-latency hearing-room spatial capture.
-2. **Smart Glasses Optical Ingestion (`0x61` `OP_GLASSES_OPTICAL_SYNC`):**
-   - Head-mounted optical gaze alignment and document capture.
-   - References zero-copy memory transport architecture (*USENIX ATC '25: Ultra-Low Latency Edge Optical Pipelines*).
-3. **Acoustic Pen Recorders (`0x62` `OP_PEN_RECORDER_SYNC`):**
-   - Ultrasonic micro-stylus digitization for synchronizing handwritten councillor meeting notes directly to agenda audio timestamps (*ACM SenSys '24 Ultrasonic Positional Invariant*).
-
-*Note: The hardware firmware and low-level mesh drivers are staged in the private satellite module `civixrecord-edge-hardware`.*
+CivixRecord-OS specifies integration with personal civic capture peripherals via Bluetooth Low Energy (BLE) and optical edge devices:
+1. **Bluetooth Headset Arrays (`0x60` `OP_BLE_HEADSET_SYNC`):** High-fidelity dual-microphone noise suppression utilizing the Bluetooth LE Audio LC3 codec.
+2. **Smart Glasses Optical Ingestion (`0x61` `OP_GLASSES_OPTICAL_SYNC`):** Head-mounted optical gaze alignment and document capture referencing zero-copy memory transport architecture (*USENIX ATC '25*).
+3. **Acoustic Pen Recorders (`0x62` `OP_PEN_RECORDER_SYNC`):** Ultrasonic micro-stylus digitization for synchronizing handwritten councillor meeting notes directly to agenda audio timestamps (*ACM SenSys '24*).
 
 ---
 
-## Native Machine-Code Bridge (`core_bridge`)
+## License
 
-The public repository exposes the Foreign Function Interface (`civixrecord.core_bridge.machine_code_bridge`) that compiles high-level operations into dense binary bytecode frames:
-- **`0x10` (`OP_INIT_AUDIO_SINK`):** Initializes zero-latency virtual loopback channels.
-- **`0x12` (`OP_CUSUM_SEGMENT`):** Real-time acoustic change-point detection.
-- **`0x19` (`OP_STATUTORY_INDEX`):** SIMD vector search over municipal procedural bylaws.
-- **`0x30` (`OP_MERMAID_SYNTHESIS`):** Real-time procedural decision tree generator.
-- **`0x60`–`0x62` (`OP_EDGE_HARDWARE`):** Hardware mesh dispatch for audio, glasses, and pens.
-
-When deployed in standalone public mode without the enterprise kernel, the engine automatically falls back to clean, portable userland Python emulation.
+CivixRecord-OS is distributed under the [MIT License](LICENSE).

@@ -45,3 +45,10 @@ Desktop.ini
 .vscode/
 *.swp
 *.swo
+
+# Node & Tauri
+node_modules/
+dist/
+target/
+src-tauri/target/
+

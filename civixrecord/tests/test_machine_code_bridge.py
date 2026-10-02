@@ -74,6 +74,54 @@ class TestMachineCodeBridge(unittest.TestCase):
         self.assertEqual(result["opcodes_compiled"], ["0x30"])
         self.assertTrue(result["verified"])
 
+    def test_live_socket_ipc_dispatch(self) -> None:
+        import socket
+        import threading
+        import struct
+
+        # Spin up a loopback socket server simulating the native Micro-VM IPC server
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.bind(("127.0.0.1", 0))
+        server.listen(5)
+        port = server.getsockname()[1]
+        server.settimeout(2.0)
+
+        running = True
+        def serve_clients():
+            while running:
+                try:
+                    conn, _ = server.accept()
+                    data = conn.recv(1024)
+                    if data:
+                        # 16-byte IpcAckPacket: [0xAA, status=0, inst_count=1, duration_us=120, bytes_proc=len(data)]
+                        ack = struct.pack(">BBHIQ", 0xAA, 0x00, 1, 120, len(data))
+                        conn.sendall(ack)
+                    conn.close()
+                except (socket.timeout, OSError):
+                    break
+
+        th = threading.Thread(target=serve_clients, daemon=True)
+        th.start()
+
+        live_bridge = MachineCodeBridge(kernel_endpoint=f"127.0.0.1:{port}")
+        frames = live_bridge.compile_ir("sync_edge_hardware", {"device_type": "smart_glasses", "fps": 60})
+        result = live_bridge.dispatch(frames)
+        running = False
+        try:
+            # trigger accept to unblock
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect(("127.0.0.1", port))
+        except Exception:
+            pass
+        th.join(timeout=1.0)
+        server.close()
+
+        self.assertEqual(result["status"], "DISPATCH_HARDWARE_ACCELERATED")
+        self.assertEqual(result["engine"], "native_symbolic_micro_vm")
+        self.assertEqual(result["frames_executed"], 1)
+        self.assertTrue(result["verified"])
+        self.assertTrue(result["kernel_ack"].startswith("aa00"))
+
 
 if __name__ == "__main__":
     unittest.main()

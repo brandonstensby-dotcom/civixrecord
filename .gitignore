@@ -52,3 +52,10 @@ dist/
 target/
 src-tauri/target/
 
+# Private standalone executables & builds
+*.exe
+*.spec
+release_binaries/
+private_build/
+launcher.py
+
